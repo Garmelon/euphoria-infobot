@@ -1,5 +1,4 @@
 import yaboli
-import operator
 
 class InfoBot(yaboli.Bot):
 	"""
@@ -53,9 +52,13 @@ class InfoBot(yaboli.Bot):
 		
 		elif ("name" in options and options["name"] is not True) or "list" in options:
 			clients = []
+			msg = ""
 			
 			if "name" in options:
 				name = self.room.mentionable(options["name"]).lower()
+				
+				if name[:1] == "@":
+					msg += "Are you sure the name is \"{}\"? You might want to omit the @.\n\n"
 				
 				clients = [c for c in self.room.get_sessions()
 				           if self.room.mentionable(c.name).lower() == name]
@@ -71,8 +74,7 @@ class InfoBot(yaboli.Bot):
 					clients = self.room.get_lurkers()
 			
 			if clients:
-				msg = ""
-				for client in sorted(clients, key=operator.attrgetter("name")):
+				for client in sorted(clients, key=lambda c: c.name.lower()):
 					msg += "id={}, session_id={}, name={}\n".format(
 						repr(client.id),
 						repr(client.session_id),
@@ -81,7 +83,7 @@ class InfoBot(yaboli.Bot):
 				
 				msg = msg[:-1] # remove trailing newline
 			else:
-				msg = "No clients"
+				msg += "No clients"
 		
 		else:
 			people = len(self.room.get_people())
