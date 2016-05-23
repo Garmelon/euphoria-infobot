@@ -51,6 +51,8 @@ class InfoBot(yaboli.Bot):
 			msg = "Sorry, the --list and --name options can't be used simultaneously."
 		
 		elif ("name" in options and options["name"] is not True) or "list" in options:
+			clients = []
+			
 			if "name" in options:
 				name = self.room.mentionable(options["name"]).lower()
 				
