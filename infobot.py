@@ -17,7 +17,7 @@ class InfoBot(yaboli.Bot):
 		                  "--list=<who> : list user names and client/session ids\n"
 		                  "--name=<name> : list info for users with the name specified\n"
 		                  "<who> can be: people, bots, lurkers, all\n"
-		                  "<name> is the name of the person (without leading '@')\n\n"
+		                  "<name> is the name of the person\n\n"
 		                  "Shows different information about the clients connected to the\n"
 		                  "current room."))
 		
@@ -52,16 +52,17 @@ class InfoBot(yaboli.Bot):
 		
 		elif ("name" in options and options["name"] is not True) or "list" in options:
 			clients = []
-			msg = ""
 			
 			if "name" in options:
 				name = self.room.mentionable(options["name"]).lower()
 				
-				if name[:1] == "@":
-					msg += "Are you sure the name is \"{}\"? You might want to omit the @.\n\n"
-				
 				clients = [c for c in self.room.get_sessions()
 				           if self.room.mentionable(c.name).lower() == name]
+				
+				if name[:1] == "@":
+					name = name[1:]
+					clients.extend([c for c in self.room.get_sessions()
+					                if self.room.mentionable(c.name).lower() == name])
 			
 			elif "list" in options:
 				if options["list"] is True or options["list"] == "all":
@@ -74,6 +75,7 @@ class InfoBot(yaboli.Bot):
 					clients = self.room.get_lurkers()
 			
 			if clients:
+				msg = ""
 				for client in sorted(clients, key=lambda c: c.name.lower()):
 					msg += "id={}, session_id={}, name={}\n".format(
 						repr(client.id),
@@ -83,7 +85,7 @@ class InfoBot(yaboli.Bot):
 				
 				msg = msg[:-1] # remove trailing newline
 			else:
-				msg += "No clients"
+				msg = "No clients"
 		
 		else:
 			people = len(self.room.get_people())
