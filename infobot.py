@@ -81,7 +81,7 @@ class InfoBot(yaboli.Bot):
 				
 				msg = msg[:-1] # remove trailing newline
 			else:
-				return
+				msg = "No clients"
 		
 		else:
 			people = len(self.room.get_people())
