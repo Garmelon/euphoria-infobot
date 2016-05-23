@@ -34,7 +34,7 @@ class InfoBot(yaboli.Bot):
 		
 		nick = "\001({}P {}B {}L)".format(
 			len(self.room.get_people()),
-			len(self.room.get_bots()),
+			len(self.room.get_bots()) + 1, # we are a bot
 			len(self.room.get_lurkers())
 		)
 		
@@ -51,22 +51,23 @@ class InfoBot(yaboli.Bot):
 			msg = "Sorry, the --list and --name options can't be used simultaneously."
 		
 		elif ("name" in options and options["name"] is not True) or "list" in options:
+			sessions = self.room.get_sessions() + [self.room.session]
 			clients = []
 			
 			if "name" in options:
 				name = self.room.mentionable(options["name"]).lower()
 				
-				clients = [c for c in self.room.get_sessions()
+				clients = [c for c in sessions
 				           if self.room.mentionable(c.name).lower() == name]
 				
 				if name[:1] == "@":
 					name = name[1:]
-					clients.extend([c for c in self.room.get_sessions()
+					clients.extend([c for c in sessions
 					                if self.room.mentionable(c.name).lower() == name])
 			
 			elif "list" in options:
 				if options["list"] is True or options["list"] == "all":
-					clients = self.room.get_sessions()
+					clients = self.room.s
 				elif options["list"] == "people":
 					clients = self.room.get_people()
 				elif options["list"] == "bots":
