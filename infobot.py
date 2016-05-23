@@ -15,7 +15,8 @@ class InfoBot(yaboli.Bot):
 		
 		self.add_command("info", self.info_command, "Show more detailed info.",
 		                 ("!info @bot [ --list[=<who>] | --name=<name> ]\n"
-		                  "--list=<who> : list user names and client and session ids\n"
+		                  "--list=<who> : list user names and client/session ids\n"
+		                  "--name=<name> : list info for users with the name specified\n"
 		                  "<who> can be: people, bots, lurkers, all\n"
 		                  "<name> is the name of the person (without leading '@')\n\n"
 		                  "Shows different information about the clients connected to the\n"
