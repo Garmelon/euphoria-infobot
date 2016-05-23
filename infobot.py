@@ -99,4 +99,4 @@ class InfoBot(yaboli.Bot):
 		self.room.send_message(msg, message.id)
 
 manager = yaboli.BotManager(InfoBot, default_nick="infobot")
-manager.create("test")
+manager.create("bots")
