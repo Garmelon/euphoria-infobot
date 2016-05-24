@@ -1,3 +1,4 @@
+import sys
 import yaboli
 
 class InfoBot(yaboli.Bot):
@@ -107,5 +108,22 @@ class InfoBot(yaboli.Bot):
 		
 		self.room.send_message(msg, message.id)
 
-manager = yaboli.BotManager(InfoBot, default_nick="infobot")
-manager.create("bots")
+def main(rooms, imode=False):
+	manager = yaboli.BotManager(InfoBot, default_nick="infobot")
+	
+	for room in rooms:
+		manager.create(room)
+	
+	#if imode:
+		#manager.interactive_mode()
+
+if __name__ == "__main__":
+	args = sys.argv[1:]
+	
+	if "-i" in args:
+		imode = True
+		args.remove("-i")
+	else:
+		imode=False
+	
+	main(args, imode=imode)
