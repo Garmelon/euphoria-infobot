@@ -96,15 +96,8 @@ class InfoBot(yaboli.Bot):
 			bots = len(self.room.get_bots())
 			lurkers = len(self.room.get_lurkers())
 			
-			msg = "people: {}\n  with accounts: {}\nbots: {}\nlurkers: {}\n\ntotal: {}\ntotal visible: {}"
-			msg = msg.format(
-				people,
-				accounts,
-				bots,
-				lurkers,
-				people + bots + lurkers,
-				people + bots
-			)
+			msg = "people: {} (with accounts: {})\nbots: {}\nlurkers: {}\ntotal: {}"
+			msg = msg.format(people, accounts, bots, lurkers, people + bots + lurkers)
 		
 		self.room.send_message(msg, message.id)
 
