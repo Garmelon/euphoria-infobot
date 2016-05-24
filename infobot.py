@@ -9,8 +9,9 @@ class InfoBot(yaboli.Bot):
 		super().__init__(*args, **kwargs)
 		
 		self.bot_description = ("This bot displays information about the clients connected to the\n"
-		                        "current room in its nick: (<people>P <bots>B <lurkers>L)\n"
-		                        "Created by @Garmy using yaboli (Yet Another Bot Library)")
+		                        "current room in its nick: (<people>P <bots>B <lurkers>L)\n\n"
+		                        "Created by @Garmy using yaboli (https://github.com/Garmelon/yaboli)\n"
+		                        "Github: https://github.com/Garmelon/infobot")
 		
 		self.add_command("info", self.info_command, "Show more detailed info.",
 		                 ("!info @bot [ --list[=<who>] | --name=<name> ]\n"
