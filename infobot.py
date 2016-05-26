@@ -93,7 +93,7 @@ class InfoBot(yaboli.Bot):
 		else:
 			people = len(self.room.get_people())
 			accounts =  len(self.room.get_accounts())
-			bots = len(self.room.get_bots())
+			bots = len(self.room.get_bots()) + 1
 			lurkers = len(self.room.get_lurkers())
 			
 			msg = "people: {} (with accounts: {})\nbots: {}\nlurkers: {}\ntotal: {}"
