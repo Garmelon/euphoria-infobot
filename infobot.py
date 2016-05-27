@@ -69,11 +69,11 @@ class InfoBot(yaboli.Bot):
 			
 			elif "list" in options:
 				if options["list"] is True or options["list"] == "all":
-					clients = self.room.s
+					clients = self.room.get_sessions() + [self.room.session]
 				elif options["list"] == "people":
 					clients = self.room.get_people()
 				elif options["list"] == "bots":
-					clients = self.room.get_bots()
+					clients = self.room.get_bots() + [self.room.session]
 				elif options["list"] == "lurkers":
 					clients = self.room.get_lurkers()
 			
