@@ -14,7 +14,7 @@ class InfoBot(yaboli.Bot):
 		
 		self.help_specific = (
 			"Displays information about the clients in a room in its nick:\n"
-			"(<people>P <bots>B [<lurkers>L] [<bot-lurkers>N])\n\n"
+			"(<people>P <bots>B <lurkers>L <bot-lurkers>N)\n\n"
 			"Github: https://github.com/Garmelon/infobot (complies with botrulez, including !kill and !restart)\n"
 			"Created by @Garmy using yaboli (https://github.com/Garmelon/yaboli)"
 		)
