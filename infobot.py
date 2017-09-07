@@ -40,6 +40,9 @@ class InfoBot(yaboli.Bot):
 	async def on_part(self, session):
 		await self.update_nick()
 	
+	async def on_nick(self, session_id, user_id, from_nick, to_nick):
+		await self.update_nick()
+	
 	async def on_snapshot(self, user_id, session_id, version, listing, log, nick=None,
 	                      pm_with_nick=None, pm_with_user_id=None):
 		await self.update_nick()
