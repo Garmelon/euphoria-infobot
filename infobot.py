@@ -12,12 +12,28 @@ class InfoBot(yaboli.Bot):
 	def __init__(self):
 		super().__init__("()")
 		
+		self.add_help("count", (
+			"This bot counts the number of clients connected to a room.\n"
+			"If you open a room in two different tabs, the bot counts you twice.\n"
+			"The euphoria client, on the other hand, usually displays all connections of an "
+			"account as one nick in the nick list.\n"
+			"Because of that, this bot's count is always as high as, or higher than, the number "
+			"of nicks on the nick list."
+		))
+		
+		self.add_help("lurkers", (
+			"People or bots who are connected to the room but haven't chosen a nick are lurkers.\n"
+			"The euphoria client doesn't display them in the nick list.\n"
+			"This bot differentiates between people (L) and bots (N) who are lurking."
+		))
+		
 		self.help_specific = (
 			"Displays information about the clients in a room in its nick:\n"
 			"(<people>P <bots>B <lurkers>L <bot-lurkers>N)\n\n"
-			"Github: https://github.com/Garmelon/infobot (complies with botrulez, including !kill and !restart)\n"
-			"Created by @Garmy using yaboli (https://github.com/Garmelon/yaboli)"
+			"Created by @Garmy using yaboli.\n"
+			"For additional info, try \"!help @{nick} <topic>\". Topics:\n"
 		)
+		self.help_specific += self.list_help_topics()
 	
 	async def update_nick(self):
 		p = len(self.room.listing.get(types=["account", "agent"], lurker=False))
