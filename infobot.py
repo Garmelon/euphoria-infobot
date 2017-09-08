@@ -9,8 +9,8 @@ class InfoBot(yaboli.Bot):
 	Display information about the clients connected to a room in its nick.
 	"""
 	
-	def __init__(self, name):
-		super().__init__(name)
+	def __init__(self):
+		super().__init__("()")
 		
 		self.help_specific = (
 			"Displays information about the clients in a room in its nick:\n"
@@ -43,8 +43,11 @@ class InfoBot(yaboli.Bot):
 	async def on_nick(self, session_id, user_id, from_nick, to_nick):
 		await self.update_nick()
 	
-	async def on_snapshot(self, user_id, session_id, version, listing, log, nick=None,
+	async def on_snapshot(self, user_id, session_id, version, sessions, messages, nick=None,
 	                      pm_with_nick=None, pm_with_user_id=None):
+		# Not needed because we're updating the nick anyways.
+		#super().on_snapshot(user_id, session_id, version, sessions, messages, nick, pm_with_nick,
+		                    #pm_with_user_id)
 		await self.update_nick()
 
 def main():
@@ -53,7 +56,7 @@ def main():
 		print(f"  {sys.argv[0]} <room>")
 		return
 	
-	run_bot(InfoBot, sys.argv[1], "()")
+	run_bot(InfoBot, sys.argv[1])
 
 if __name__ == "__main__":
 	main()
