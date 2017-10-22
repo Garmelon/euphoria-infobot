@@ -13,22 +13,22 @@ class InfoBot(yaboli.Bot):
 		super().__init__("()")
 
 		self.add_help("count", (
-			"This bot counts the number of clients connected to a room.\n"
-			"If you open a room in two different tabs, the bot counts you "
-			"twice.\n"
-			"The euphoria client, on the other hand, usually displays all "
-			"connections of an account as one nick in the nick list.\n"
-			"Because of that, this bot's count is always as high as, or higher "
-			"than, the number of nicks on the nick list.\n\n"
+			"This bot counts the number of clients connected to a room. If you"
+			" open a room in two different tabs, the bot counts you twice.\n"
+			"The euphoria client, on the other hand, usually displays all"
+			" connections of an account as one nick in the nick list. Because of"
+			" that, this bot's count is always as high as, or higher than, the"
+			" number of nicks on the nick list, similar to the number on the"
+			" button to toggle the nick list.\n\n"
 			"If the bot's count is off, try a !recount."
 		))
 
 		self.add_help("lurkers", (
-			"People or bots who are connected to the room but haven't chosen a "
-			"nick are lurkers.\n"
-			"The euphoria client doesn't display them in the nick list.\n"
-			"This bot differentiates between people (L) and bots (N) who are "
-			"lurking."
+			"People or bots who are connected to the room but haven't chosen a"
+			" nick are lurkers. The euphoria client doesn't display them in the"
+			" nick list.\n"
+			"This bot differentiates between people (L) and bots (N) who are"
+			" lurking."
 		))
 
 		self.add_help("changelog", (
