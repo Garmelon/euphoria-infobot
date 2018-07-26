@@ -1,2 +1,5 @@
+**/__pycache__
 yaboli
-__pycache__
+websockets
+join_rooms.py
+*.cookie
