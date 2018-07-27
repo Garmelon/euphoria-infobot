@@ -81,7 +81,7 @@ class InfoBot(yaboli.Bot):
 
 	async def update_nick(self, room):
 		p = len(room.listing.get(types=["account", "agent"], lurker=False))
-		b = 1 + len(room.listing.get(types=["bot"], lurker=False))
+		b = len(room.listing.get(types=["bot"], lurker=False))
 		l = len(room.listing.get(types=["account", "agent"], lurker=True))
 		n = len(room.listing.get(types=["bot"], lurker=True))
 
@@ -120,7 +120,7 @@ class InfoBot(yaboli.Bot):
 
 	@yaboli.command("detail", specific=True, args=False)
 	async def command_detail(self, room, message):
-		sessions = room.listing.get() + [room.session]
+		sessions = room.listing.get()
 		sessions = sorted(sessions, key=lambda s: s.uid)
 		sessions = [self.format_session(s) for s in sessions]
 		text = "\n".join(sessions)
@@ -135,7 +135,7 @@ class InfoBot(yaboli.Bot):
 	@yaboli.command("hosts", specific=True, args=True)
 	async def command_hosts(self, room, message, argstr):
 		flags, args, kwargs = self.parse_flags(self.parse_args(argstr))
-		sessions = room.listing.get() + [room.session]
+		sessions = room.listing.get()
 		sessions = sorted(set(s.nick for s in sessions if s.is_manager))
 		if "ping" in kwargs:
 			sessions = ["@" + mention(s) for s in sessions]
