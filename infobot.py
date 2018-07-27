@@ -147,11 +147,11 @@ class InfoBot(yaboli.Bot):
 	async def command_hosts(self, room, message, argstr):
 		flags, args, kwargs = self.parse_flags(self.parse_args(argstr))
 		sessions = room.listing.get() + [room.session]
-		sessions = [s for s in sessions if s.is_manager]
+		sessions = sorted(set(s.nick for s in sessions if s.is_manager))
 		if "mention" in kwargs:
-			sessions = ["@" + mention(s.nick) for s in sessions]
+			sessions = ["@" + mention(s) for s in sessions]
 		else:
-			sessions = [s.nick for s in sessions]
+			sessions = [s for s in sessions]
 		text = "Hosts that are currently in this room:\n" + "\n".join(sessions)
 		await room.send(text, message.mid)
 
