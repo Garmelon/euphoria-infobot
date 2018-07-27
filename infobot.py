@@ -2,9 +2,7 @@ import asyncio
 
 import yaboli
 from yaboli.utils import *
-
-# List of rooms kept in separate file, which is .gitignore'd
-import join_rooms
+from join_rooms import join_rooms # List of rooms kept in separate file, which is .gitignore'd
 
 
 class InfoBot(yaboli.Bot):
@@ -15,7 +13,7 @@ class InfoBot(yaboli.Bot):
 	async def send(self, room, message):
 		await self.botrulez_ping_general(room, message)
 		await self.botrulez_ping_specific(room, message)
-		await self.botrulez_help_general(room, message, help_text="I count the types of clients in my nick")
+		await self.botrulez_help_general(room, message, text="I count the types of clients in my nick")
 		await self.botrulez_uptime(room, message)
 		await self.botrulez_kill(room, message)
 		await self.botrulez_restart(room, message)
@@ -146,7 +144,7 @@ class InfoBot(yaboli.Bot):
 
 def main():
 	bot = InfoBot("()", "infobot.cookie")
-	join_rooms.join_rooms(bot)
+	join_rooms(bot)
 	asyncio.get_event_loop().run_forever()
 
 if __name__ == "__main__":
