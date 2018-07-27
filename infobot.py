@@ -38,7 +38,7 @@ class InfoBot(yaboli.Bot):
 
 	forward = send
 
-	@yaboli.command("help", specific=True)
+	@yaboli.command("help", specific=True, args=True)
 	async def command_help(self, room, message, argstr):
 		nick = mention(room.session.nick)
 		args = self.parse_args(argstr)
@@ -123,13 +123,13 @@ class InfoBot(yaboli.Bot):
 		await room.who()
 		await self.update_nick(room)
 
-	@yaboli.command("recount", specific=True, noargs=True)
+	@yaboli.command("recount", specific=True, args=False)
 	async def command_recount(self, room, message):
 		await room.who()
 		await self.update_nick(room)
 		await room.send("Recalibrated.", message.mid)
 
-	@yaboli.command("detail", specific=True, noargs=True)
+	@yaboli.command("detail", specific=True, args=False)
 	async def command_detail(self, room, message):
 		sessions = room.listing.get() + [room.session]
 		sessions = sorted(sessions, key=lambda s: s.uid)
@@ -143,7 +143,7 @@ class InfoBot(yaboli.Bot):
 		is_manager = "yes" if s.is_manager else "no"
 		return f"UID: {s.uid}\t| SID: {s.sid}\t| staff: {is_staff}\t| host: {is_manager}\t| nick: {s.nick!r}"
 
-	@yaboli.command("hosts", specific=True, noargs=False)
+	@yaboli.command("hosts", specific=True, args=True)
 	async def command_hosts(self, room, message, argstr):
 		flags, args, kwargs = self.parse_flags(self.parse_args(argstr))
 		sessions = room.listing.get() + [room.session]
