@@ -12,17 +12,6 @@ class InfoBot(yaboli.Bot):
 	Display information about the clients connected to a room in its nick.
 	"""
 
-	short_help_text = "I show the types of clients in my nick"
-	help_text = (
-		"Displays information about the clients in a room in its nick:\n"
-		"(<people>P <bots>B <lurkers>L <bot-lurkers>N)\n\n"
-		"!recount @{nick} - Recount people in the room\n\n"
-		"Created by @Garmy using yaboli.\n"
-		"For additional info, try \"!help @{nick} <topic>\". Topics:\n"
-		"count, lurkers, changelog"
-	)
-
-
 	async def send(self, room, message):
 		await self.botrulez_ping_general(room, message)
 		await self.botrulez_ping_specific(room, message)
