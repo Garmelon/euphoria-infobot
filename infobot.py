@@ -148,7 +148,7 @@ class InfoBot(yaboli.Bot):
 		flags, args, kwargs = self.parse_flags(self.parse_args(argstr))
 		sessions = room.listing.get() + [room.session]
 		sessions = sorted(set(s.nick for s in sessions if s.is_manager))
-		if "mention" in kwargs:
+		if "ping" in kwargs:
 			sessions = ["@" + mention(s) for s in sessions]
 		else:
 			sessions = [s for s in sessions]
