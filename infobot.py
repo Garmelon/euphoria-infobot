@@ -16,7 +16,7 @@ class InfoBot(yaboli.Bot):
 	Display information about the clients connected to a room in its nick.
 	"""
 
-	async def send(self, room, message):
+	async def on_send(self, room, message):
 		await self.botrulez_ping_general(room, message)
 		await self.botrulez_ping_specific(room, message)
 		await self.botrulez_help_general(room, message, text="I count the types of clients in my nick")
@@ -28,8 +28,6 @@ class InfoBot(yaboli.Bot):
 		await self.command_recount(room, message)
 		await self.command_detail(room, message)
 		await self.command_hosts(room, message)
-
-	forward = send
 
 	@yaboli.command("help", specific=True, args=True)
 	async def command_help(self, room, message, argstr):
@@ -96,22 +94,23 @@ class InfoBot(yaboli.Bot):
 		if n > 0: name.append(f"{n}N")
 		name = "\u0001(" + " ".join(name) + ")"
 
-		await room.nick(name)
+		if room.session.nick != name:
+			await room.nick(name)
 
-	async def connected(self, room, log):
+	async def on_connected(self, room, log):
 		await self.update_nick(room)
 
-	async def join(self, room, session):
+	async def on_join(self, room, session):
 		await self.update_nick(room)
 		await room.who()
 		await self.update_nick(room)
 
-	async def part(self, room, session):
+	async def on_part(self, room, session):
 		await self.update_nick(room)
 		await room.who()
 		await self.update_nick(room)
 
-	async def nick(self, room, sid, uid, from_nick, to_nick):
+	async def on_nick(self, room, sid, uid, from_nick, to_nick):
 		await self.update_nick(room)
 		await room.who()
 		await self.update_nick(room)
