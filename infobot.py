@@ -1,13 +1,14 @@
 import asyncio
 import logging
 
-# Turn all debugging on
-asyncio.get_event_loop().set_debug(True)
-logging.basicConfig(level=logging.DEBUG)
-
 import yaboli
 from yaboli.utils import *
 from join_rooms import join_rooms # List of rooms kept in separate file, which is .gitignore'd
+
+# Turn all debugging on
+asyncio.get_event_loop().set_debug(True)
+logging.getLogger("asyncio").setLevel(logging.INFO)
+logging.getLogger("yaboli").setLevel(logging.DEBUG)
 
 
 class InfoBot(yaboli.Bot):
