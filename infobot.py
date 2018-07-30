@@ -54,7 +54,7 @@ class InfoBot(yaboli.Bot):
 						"This bot counts the number of clients connected to a room. If you"
 						" open a room in two different tabs, the bot counts you twice.\n"
 						"The euphoria client, on the other hand, usually displays all"
-						" connections of an account with the same nick as one in thenick list."
+						" connections of an account with the same nick as one in the nick list."
 						" Because of that, this bot's count is always as high as, or higher than,"
 						" the number of nicks on the nick list, similar to the number on the"
 						" button to toggle the nick list.\n"
