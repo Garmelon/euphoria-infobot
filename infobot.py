@@ -1,9 +1,9 @@
 import asyncio
+import configparser
 import logging
 
 import yaboli
 from yaboli.utils import *
-from join_rooms import join_rooms # List of rooms kept in separate file, which is .gitignore'd
 
 # Turn all debugging on
 asyncio.get_event_loop().set_debug(True)
@@ -148,10 +148,21 @@ class InfoBot(yaboli.Bot):
 		text = "Hosts that are currently in this room:\n" + "\n".join(sessions)
 		await room.send(text, message.mid)
 
-def main():
-	bot = InfoBot("()", "infobot.cookie")
-	join_rooms(bot)
+def main(configfile):
+	config = configparser.ConfigParser(allow_no_value=True)
+	config.read(configfile)
+
+	nick = config.get("general", "nick")
+	cookiefile = config.get("general", "cookiefile", fallback=None)
+	print(cookiefile)
+	bot = InfoBot(nick, cookiefile=cookiefile)
+
+	for room, password in config.items("rooms"):
+		if not password:
+			password = None
+		bot.join_room(room, password=password)
+
 	asyncio.get_event_loop().run_forever()
 
 if __name__ == "__main__":
-	main()
+	main("infobot.conf")
