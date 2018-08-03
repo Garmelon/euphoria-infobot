@@ -39,12 +39,12 @@ class InfoBot(yaboli.Bot):
 				"Displays information about the clients in a room in its nick:\n"
 				"(<people>P <bots>B <lurkers>L <bot-lurkers>N)\n"
 				"\n"
-				"!recount @{nick} - Recount people in the room\n"
-				"!detail @{nick} - Detailed list of clients in this room\n"
-				"!hosts @{nick} [--mention] - Lists all hosts currently in this room\n"
+				"!recount {nick} - Recount people in the room\n"
+				"!detail {nick} - Detailed list of clients in this room\n"
+				"!hosts {nick} [--mention] - Lists all hosts currently in this room\n"
 				"\n"
 				"Created by @Garmy using https://github.com/Garmelon/yaboli.\n"
-				"For additional info, try \"!help @{nick} <topic>\". Topics:\n"
+				"For additional info, try \"!help {nick} <topic>\". Topics:\n"
 				"    count, lurkers, changelog"
 			).format(nick=nick)
 			await room.send(text, message.mid)
@@ -60,7 +60,7 @@ class InfoBot(yaboli.Bot):
 						" the number of nicks on the nick list, similar to the number on the"
 						" button to toggle the nick list.\n"
 						"\n"
-						"If the bot's count is off, try a !recount or a !restart @{nick}."
+						"If the bot's count is off, try a !recount or a !restart {nick}."
 					).format(nick=nick)
 				elif topic == "lurkers":
 					text = (
