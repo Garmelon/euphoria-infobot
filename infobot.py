@@ -1,9 +1,11 @@
 import asyncio
 import configparser
 import logging
+import re
 
 import yaboli
 from yaboli.utils import *
+
 
 # Turn all debugging on
 asyncio.get_event_loop().set_debug(True)
@@ -17,27 +19,36 @@ class InfoBot(yaboli.Bot):
 	Display information about the clients connected to a room in its nick.
 	"""
 
-	async def on_send(self, room, message):
-		await self.botrulez_ping_general(room, message)
-		await self.botrulez_ping_specific(room, message)
-		await self.botrulez_help_general(room, message, text="I count the types of clients in my nick")
-		await self.botrulez_uptime(room, message)
-		await self.botrulez_kill(room, message)
-		await self.botrulez_restart(room, message)
+	async def on_command_specific(self, room, message, command, nick, argstr):
+		is_mentioned = similar(nick, room.session.nick) or similar(nick, "infobot")
+		is_mentioned = is_mentioned or re.fullmatch("p?bl?n?|\(p?bl?n?\)", normalize(nick))
+		if is_mentioned:
+			if not argstr:
+				await self.botrulez_ping(room, message, command)
+				await self.botrulez_uptime(room, message, command)
+				await self.botrulez_kill(room, message, command)
+				await self.botrulez_restart(room, message, command)
 
-		await self.command_help(room, message)
-		await self.command_recount(room, message)
-		await self.command_detail(room, message)
-		await self.command_hosts(room, message)
+				await self.command_recount(room, message, command)
+				await self.command_detail(room, message, command)
 
-	@yaboli.command("help", specific=True, args=True)
+			await self.command_help(room, message, command, argstr)
+			await self.command_hosts(room, message, command, argstr)
+
+	async def on_command_general(self, room, mesage, command, argstr):
+		if not argstr:
+			await self.botrulez_ping(room, message, command)
+			await self.botrulez_help(room, message, command, text="I count the types of clients in my nick")
+
+	@yaboli.command("help")
 	async def command_help(self, room, message, argstr):
 		nick = mention(room.session.nick)
 		args = self.parse_args(argstr)
 		if not args:
 			text = (
-				"Displays information about the clients in a room in its nick:\n"
-				"(<people>P <bots>B <lurkers>L <bot-lurkers>N)\n"
+				"Displays information about the clients in a room in its nick:"
+				" (<people>P\u00A0<bots>B\u00A0<lurkers>L\u00A0<bot-lurkers>N)\n"
+				"You can also use @InfoBot, @PBL or @(PBL) for bot commands.\n"
 				"\n"
 				"!recount {nick} - Recount people in the room\n"
 				"!detail {nick} - Detailed list of clients in this room\n"
@@ -116,13 +127,13 @@ class InfoBot(yaboli.Bot):
 		await room.who()
 		await self.update_nick(room)
 
-	@yaboli.command("recount", specific=True, args=False)
+	@yaboli.command("recount")
 	async def command_recount(self, room, message):
 		await room.who()
 		await self.update_nick(room)
 		await room.send("Recalibrated.", message.mid)
 
-	@yaboli.command("detail", specific=True, args=False)
+	@yaboli.command("detail")
 	async def command_detail(self, room, message):
 		sessions = room.listing.get()
 		sessions = sorted(sessions, key=lambda s: s.uid)
@@ -136,7 +147,7 @@ class InfoBot(yaboli.Bot):
 		is_manager = "yes" if s.is_manager else "no"
 		return f"UID: {s.uid}\t| SID: {s.sid}\t| staff: {is_staff}\t| host: {is_manager}\t| nick: {s.nick!r}"
 
-	@yaboli.command("hosts", specific=True, args=True)
+	@yaboli.command("hosts")
 	async def command_hosts(self, room, message, argstr):
 		flags, args, kwargs = self.parse_flags(self.parse_args(argstr))
 		sessions = room.listing.get()
@@ -154,7 +165,6 @@ def main(configfile):
 
 	nick = config.get("general", "nick")
 	cookiefile = config.get("general", "cookiefile", fallback=None)
-	print(cookiefile)
 	bot = InfoBot(nick, cookiefile=cookiefile)
 
 	for room, password in config.items("rooms"):
