@@ -1,0 +1,9 @@
+[general]
+nick = ()
+cookiefile = infobot.cookie
+
+[rooms]
+# Format:
+# room
+# room=password
+test
