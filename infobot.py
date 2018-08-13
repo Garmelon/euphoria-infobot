@@ -33,12 +33,13 @@ class InfoBot(yaboli.Bot):
 				await self.command_detail(room, message, command)
 
 			await self.command_help(room, message, command, argstr)
-			await self.command_hosts(room, message, command, argstr)
 
 	async def on_command_general(self, room, mesage, command, argstr):
 		if not argstr:
 			await self.botrulez_ping(room, message, command)
 			await self.botrulez_help(room, message, command, text="I count the types of clients in my nick")
+
+			await self.command_hosts(room, message, command, argstr)
 
 	@yaboli.command("help")
 	async def command_help(self, room, message, argstr):
