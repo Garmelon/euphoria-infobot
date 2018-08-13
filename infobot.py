@@ -153,11 +153,16 @@ class InfoBot(yaboli.Bot):
 		flags, args, kwargs = self.parse_flags(self.parse_args(argstr))
 		sessions = room.listing.get()
 		sessions = sorted(set(s.nick for s in sessions if s.is_manager))
+
 		if "ping" in kwargs:
-			sessions = ["@" + mention(s) for s in sessions]
+			sessions = [mention(s) for s in sessions]
 		else:
 			sessions = [s for s in sessions]
-		text = "Hosts that are currently in this room:\n" + "\n".join(sessions)
+
+		if sessions:
+			text = "Hosts that are currently in this room:\n" + "\n".join(sessions)
+		else:
+			text = "No hosts currently in this room."
 		await room.send(text, message.mid)
 
 def main(configfile):
