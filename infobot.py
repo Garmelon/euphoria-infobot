@@ -23,9 +23,9 @@ class InfoBot(yaboli.Bot):
 				await self.botrulez_restart(room, message, command)
 
 				await self.command_recount(room, message, command)
-				await self.command_detail(room, message, command)
 
 			await self.command_help(room, message, command, argstr)
+			await self.command_detail(room, message, command, argstr)
 
 	async def on_command_general(self, room, message, command, argstr):
 		if not argstr:
@@ -46,6 +46,7 @@ class InfoBot(yaboli.Bot):
 				"\n"
 				"!recount {nick} - Recount people in the room\n"
 				"!detail {nick} - Detailed list of clients in this room\n"
+				"!detail {nick} @person - Detailed info regarding @person\n"
 				"!hosts {nick} [--mention] - Lists all hosts currently in this room\n"
 				"\n"
 				"Created by @Garmy using https://github.com/Garmelon/yaboli.\n"
@@ -128,12 +129,33 @@ class InfoBot(yaboli.Bot):
 		await room.send("Recalibrated.", message.mid)
 
 	@yaboli.command("detail")
-	async def command_detail(self, room, message):
+	async def command_detail(self, room, message, argstr):
 		sessions = room.listing.get()
-		sessions = sorted(sessions, key=lambda s: s.uid)
-		sessions = [self.format_session(s) for s in sessions]
-		text = "\n".join(sessions)
-		await room.send(text, message.mid)
+		args = self.parse_args(argstr)
+
+		if args:
+			lines = []
+			for arg in args:
+				if arg.startswith("@") and arg[1:]:
+					nick = arg[1:]
+				else:
+					nick = arg
+
+				for ses in sessions:
+					if similar(ses.nick, nick):
+							lines.append(self.format_session(ses))
+
+			if lines:
+				text = "\n".join(lines)
+			else:
+				text = "No sessions found that match any of the nicks."
+			await room.send(text, message.mid)
+
+		else:
+			sessions = sorted(sessions, key=lambda s: s.uid)
+			lines = [self.format_session(s) for s in sessions]
+			text = "\n".join(lines)
+			await room.send(text, message.mid)
 
 	@staticmethod
 	def format_session(s):
