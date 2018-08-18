@@ -7,13 +7,6 @@ import yaboli
 from yaboli.utils import *
 
 
-# Turn all debugging on
-asyncio.get_event_loop().set_debug(True)
-#logging.getLogger("asyncio").setLevel(logging.INFO)
-#logging.getLogger("yaboli").setLevel(logging.DEBUG)
-logging.basicConfig(level=logging.DEBUG)
-
-
 class InfoBot(yaboli.Bot):
 	"""
 	Display information about the clients connected to a room in its nick.
@@ -166,6 +159,8 @@ class InfoBot(yaboli.Bot):
 		await room.send(text, message.mid)
 
 def main(configfile):
+	logging.basicConfig(level=logging.INFO)
+
 	config = configparser.ConfigParser(allow_no_value=True)
 	config.read(configfile)
 
