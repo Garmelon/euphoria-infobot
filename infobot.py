@@ -18,8 +18,8 @@ class InfoBot(yaboli.Bot):
             "You can also use @InfoBot, @PBL or @(PBL) for bot commands.",
             "",
             "!recount {atmention} - Recount people in the room",
-            #"!detail {atmention} - Detailed list of clients in this room",
-            #"!detail {atmention} @person - Detailed info regarding @person",
+            "!detail {atmention} - Detailed list of clients in this room",
+            "!detail {atmention} @person - Detailed info regarding @person",
             "!hosts [--ping] - Lists all hosts currently in this room",
             "",
             "Created by @Garmy using https://github.com/Garmelon/yaboli.",
@@ -36,8 +36,7 @@ class InfoBot(yaboli.Bot):
             " as the number of nicks on the nick list, similar to the number on"
             " the button to toggle the nick list.",
             "",
-            #"If the bot's count is off, try a !recount or a !restart {atmention}.",
-            "If the bot's count is off, try a !recount.",
+            "If the bot's count is off, try a !recount or a !restart {atmention}.",
     ]
 
     HELP_LURKERS = [
@@ -49,7 +48,7 @@ class InfoBot(yaboli.Bot):
     ]
 
     HELP_CHANGELOG = [
-            "(2019-04-13) re-add !hosts command",
+            "(2019-04-13) re-add !hosts and !detail command",
             "(2019-04-12) update to yaboli rewrite 5",
     ]
 
@@ -61,10 +60,14 @@ class InfoBot(yaboli.Bot):
 
     def __init__(self, config_file):
         super().__init__(config_file)
-        self.register_botrulez(help_=False, kill=True) # using our own help functions
+        # using our own help functions, which is why help_=False
+        self.register_botrulez(help_=False, kill=True, restart=True)
+
         self.register_general("help", self.cmd_help_general, args=False)
         self.register_specific("help", self.cmd_help_specific)
+
         self.register_specific("recount", self.cmd_recount, args=False)
+        self.register_specific("detail", self.cmd_detail)
         self.register_general("hosts", self.cmd_hosts)
 
     async def cmd_help_specific(self, room, message, args):
@@ -106,6 +109,40 @@ class InfoBot(yaboli.Bot):
             lines = ["No hosts currently in this room."]
 
         await message.reply("\n".join(lines))
+
+    @staticmethod
+    def format_session(s):
+        is_staff = "yes" if s.is_staff else "no"
+        is_manager = "yes" if s.is_manager else "no"
+        uid = s.user_id
+        sid = s.session_id
+        return f"UID: {uid}\t| SID: {sid}\t| staff: {is_staff}\t| host: {is_manager}\t| nick: {s.nick!r}"
+
+    async def cmd_detail(self, room, message, args):
+        in_room = room.users.with_join(room.session)
+
+        if args.has_args():
+            users = []
+            for arg in args.basic():
+                if arg.startswith("@") and arg[1:]:
+                    nick = arg[1:]
+                else:
+                    nick = arg
+
+                for user in in_room:
+                    if similar(user.nick, nick):
+                        users.append(user)
+
+            if users:
+                lines = (self.format_session(user) for user in users)
+                await message.reply("\n".join(lines))
+            else:
+                await message.reply("No sessions found that match any of the nicks.")
+
+        else:
+            users = sorted(in_room, key=lambda user: user.user_id)
+            lines = (self.format_session(user) for user in users)
+            await message.reply("\n".join(lines))
 
     # Updating the nick
 
@@ -159,41 +196,6 @@ class InfoBot(yaboli.Bot):
     async def on_nick(self, room, user, from_nick, to_nick):
         await self.update_nick(room)
 
-#	@yaboli.command("detail")
-#	async def command_detail(self, room, message, argstr):
-#		sessions = room.listing.get()
-#		args = self.parse_args(argstr)
-#
-#		if args:
-#			lines = []
-#			for arg in args:
-#				if arg.startswith("@") and arg[1:]:
-#					nick = arg[1:]
-#				else:
-#					nick = arg
-#
-#				for ses in sessions:
-#					if similar(ses.nick, nick):
-#							lines.append(self.format_session(ses))
-#
-#			if lines:
-#				text = "\n".join(lines)
-#			else:
-#				text = "No sessions found that match any of the nicks."
-#			await room.send(text, message.mid)
-#
-#		else:
-#			sessions = sorted(sessions, key=lambda s: s.uid)
-#			lines = [self.format_session(s) for s in sessions]
-#			text = "\n".join(lines)
-#			await room.send(text, message.mid)
-#
-#	@staticmethod
-#	def format_session(s):
-#		is_staff = "yes" if s.is_staff else "no"
-#		is_manager = "yes" if s.is_manager else "no"
-#		return f"UID: {s.uid}\t| SID: {s.sid}\t| staff: {is_staff}\t| host: {is_manager}\t| nick: {s.nick!r}"
-#
 
 if __name__ == "__main__":
     yaboli.enable_logging(level=logging.DEBUG)
