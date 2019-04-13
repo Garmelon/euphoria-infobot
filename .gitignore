@@ -10,3 +10,4 @@ pyvenv.cfg
 
 # config files
 *.conf
+cookie_jar

@@ -1,5 +1,6 @@
 [general]
 nick = ()
+cookie_file = cookie_jar
 
 [rooms]
 test
