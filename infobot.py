@@ -182,7 +182,9 @@ class InfoBot(yaboli.Bot):
     async def update_nick(self, room):
         users = await room.who()
         new_nick = self.format_nick(users)
-        await room.nick(new_nick)
+
+        if room.session.nick != new_nick:
+            await room.nick(new_nick)
 
     async def on_connected(self, room):
         await self.update_nick(room)
