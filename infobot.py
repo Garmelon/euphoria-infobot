@@ -156,6 +156,8 @@ class InfoBot(yaboli.Bot):
     async def on_part(self, room, user):
         await self.update_nick(room)
 
+    async def on_nick(self, room, user, from_nick, to_nick):
+        await self.update_nick(room)
 
 #	@yaboli.command("detail")
 #	async def command_detail(self, room, message, argstr):
