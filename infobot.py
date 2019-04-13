@@ -1,6 +1,7 @@
 import logging
 
 import yaboli
+from yaboli.util import *
 
 
 class InfoBot(yaboli.Bot):
@@ -19,7 +20,7 @@ class InfoBot(yaboli.Bot):
             "!recount {atmention} - Recount people in the room",
             #"!detail {atmention} - Detailed list of clients in this room",
             #"!detail {atmention} @person - Detailed info regarding @person",
-            #"!hosts {atmention} [--mention] - Lists all hosts currently in this room",
+            "!hosts [--ping] - Lists all hosts currently in this room",
             "",
             "Created by @Garmy using https://github.com/Garmelon/yaboli.",
             "For additional info, try \"!help {atmention} <topic>\". Topics:",
@@ -48,6 +49,7 @@ class InfoBot(yaboli.Bot):
     ]
 
     HELP_CHANGELOG = [
+            "(2019-04-13) re-add !hosts command",
             "(2019-04-12) update to yaboli rewrite 5",
     ]
 
@@ -63,6 +65,7 @@ class InfoBot(yaboli.Bot):
         self.register_general("help", self.cmd_help_general, args=False)
         self.register_specific("help", self.cmd_help_specific)
         self.register_specific("recount", self.cmd_recount, args=False)
+        self.register_general("hosts", self.cmd_hosts)
 
     async def cmd_help_specific(self, room, message, args):
         if not args.has_args():
@@ -83,6 +86,26 @@ class InfoBot(yaboli.Bot):
     async def cmd_recount(self, room, message, args):
         await self.update_nick(room)
         await message.reply("Recalibrated.")
+
+    async def cmd_hosts(self, room, message, args):
+        fancy = args.fancy()
+        ping = "mention" in fancy.optional or "ping" in fancy.optional
+
+        hosts = sorted(set(user.nick for user in room.users if user.is_manager))
+
+        lines = []
+        for host in hosts:
+            if ping:
+                lines.append(atmention(host))
+            else:
+                lines.append(host)
+
+        if lines:
+            lines = ["Hosts that are currently in this room:"] + lines
+        else:
+            lines = ["No hosts currently in this room."]
+
+        await message.reply("\n".join(lines))
 
     # Updating the nick
 
@@ -169,22 +192,6 @@ class InfoBot(yaboli.Bot):
 #		is_manager = "yes" if s.is_manager else "no"
 #		return f"UID: {s.uid}\t| SID: {s.sid}\t| staff: {is_staff}\t| host: {is_manager}\t| nick: {s.nick!r}"
 #
-#	@yaboli.command("hosts")
-#	async def command_hosts(self, room, message, argstr):
-#		flags, args, kwargs = self.parse_flags(self.parse_args(argstr))
-#		sessions = room.listing.get()
-#		sessions = sorted(set(s.nick for s in sessions if s.is_manager))
-#
-#		if "ping" in kwargs:
-#			sessions = [mention(s) for s in sessions]
-#		else:
-#			sessions = [s for s in sessions]
-#
-#		if sessions:
-#			text = "Hosts that are currently in this room:\n" + "\n".join(sessions)
-#		else:
-#			text = "No hosts currently in this room."
-#		await room.send(text, message.mid)
 
 if __name__ == "__main__":
     yaboli.enable_logging(level=logging.DEBUG)
