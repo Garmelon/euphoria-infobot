@@ -58,8 +58,8 @@ class InfoBot(yaboli.Bot):
             "changelog": HELP_CHANGELOG,
     }
 
-    def __init__(self, config_file):
-        super().__init__(config_file)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         # using our own help functions, which is why help_=False
         self.register_botrulez(help_=False, kill=True, restart=True)
 
